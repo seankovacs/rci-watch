@@ -1,0 +1,10 @@
+{
+  "name": "rci-watch-backend",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "oracledb": "^5.3.0"
+  }
+}
