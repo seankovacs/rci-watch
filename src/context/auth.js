@@ -4,13 +4,15 @@ import { authProvider } from "../lib/auth";
 const AuthContext = React.createContext();
 
 function AuthProvider({ children }) {
-  const [user, setUser] = React.useState(null);
+  const persistedUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+  const [user, setUser] = React.useState(persistedUser);
   const [error, setError] = React.useState(null);
 
   let signin = (email, password, callback) => {
     setUser(null);
     setError(null);
     return authProvider.signin(email, password, (user, error) => {
+      localStorage.setItem('user', JSON.stringify(user))
       setUser(user);
       setError(error);
       callback();
