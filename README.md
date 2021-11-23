@@ -21,4 +21,4 @@ This application will allow real estate investors the ability to analyze housing
 - Cost of Living Data - **Numbeo** @ https://www.numbeo.com/cost-of-living/region_rankings.jsp
 - Unemployment Data - **BLS** @ https://www.bls.gov/lau/laucnty20.txt
 - Wage Data - **IRS** @ https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-2018-zip-code-data-soi
-- Zip Code Lookup Data - **Simplemaps** @ https://simplemaps.com/data/us-zips
+- Zip Code Lookup Data - **Simplemaps** @ https://simplemaps.com/data/us-zips   

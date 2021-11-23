@@ -6,7 +6,6 @@ const Header = () => (
   <>
     <Navbar bg="light">
       <Container fluid>
-        <Navbar.Brand href="#">RCI Watch</Navbar.Brand>
         <Nav className="me-auto" variant="tabs" defaultActiveKey="hot_market">
           <Nav.Item>
             <Nav.Link eventKey="hot_market">Hot Market</Nav.Link>

@@ -1,11 +1,13 @@
 import "./App.css";
-import Header from "./components/Header";
+import React from "react";
+import { AuthProvider } from './context/auth';
+import AppRoutes from './routes';
 
 function App() {
   return (
-    <>
-      <Header />
-    </>
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 
