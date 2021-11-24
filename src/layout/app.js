@@ -8,7 +8,7 @@ function AppLayout() {
     <>
       <NavBar />
       <AppTabs />
-      <Container className="d-flex flex-column align-items-center p-4">
+      <Container className="d-flex flex-column align-items-center p-4" fluid>
         <Outlet />
       </Container>
     </>

@@ -1,4 +1,4 @@
-const API_ENDPOINT = `http://localhost:5000`;
+import { API_ENDPOINT } from './api';
 
 const authProvider = {
   isAuthenticated: false,
