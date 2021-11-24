@@ -6,6 +6,7 @@ import AppLayout from "./layout/app";
 import HomePage from "./containers/HomePage";
 import LoginPage from "./containers/LoginPage";
 import HotMarket from "./containers/HotMarket";
+import InventoryAge from "./containers/InventoryAge";
 
 function RequireAuth({ children }) {
   let auth = useAuth();
@@ -32,6 +33,14 @@ export default function AppRoutes() {
           element={
             <RequireAuth>
               <HotMarket />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/inventory-age"
+          element={
+            <RequireAuth>
+              <InventoryAge />
             </RequireAuth>
           }
         />
