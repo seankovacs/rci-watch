@@ -2,10 +2,10 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Container from 'react-bootstrap/Container'
-import ListGroup from 'react-bootstrap/ListGroup'
-import { getHotMarketData } from '../lib/api';
-import RealEstateDatePicker from '../components/RealEstateDatePicker';
+import Container from "react-bootstrap/Container";
+import ListGroup from "react-bootstrap/ListGroup";
+import { getHotMarketData } from "../lib/api";
+import RealEstateDatePicker from "../components/RealEstateDatePicker";
 
 mapboxgl.accessToken =
   "pk.eyJ1Ijoic2VhbmtvdmFjcy11ZmwiLCJhIjoiY2t3Y2l4aXVoMzRkZzJubmhteTF5Mmc2ZSJ9.WGnrdlURMu5ooEfcWTZfmg";
@@ -15,11 +15,11 @@ const HotMarket = () => {
   const map = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [bounds, setBounds] = useState(null);
-  const [lng,] = useState(-96.1);
-  const [lat,] = useState(38.0);
-  const [zoom,] = useState(3.5);
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [lng] = useState(-96.1);
+  const [lat] = useState(38.0);
+  const [zoom] = useState(3.5);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [top5, setTop5] = useState([]);
 
   // setup Mapbox map
@@ -31,16 +31,15 @@ const HotMarket = () => {
       center: [lng, lat],
       zoom: zoom,
     });
-    map.current.on('load', () => {
+    map.current.on("load", () => {
       const bounds = map.current.getBounds();
       setBounds(bounds);
       setLoaded(true);
     });
-    map.current.on('moveend', () => {
+    map.current.on("moveend", () => {
       const bounds = map.current.getBounds();
       setBounds(bounds);
-    })
-
+    });
   });
 
   // get data
@@ -49,12 +48,14 @@ const HotMarket = () => {
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
 
-      getHotMarketData(startDate, endDate, ne.lat, ne.lng, sw.lat, sw.lng).then(
-        (resp) => {
+      getHotMarketData(startDate, endDate, ne.lat, ne.lng, sw.lat, sw.lng)
+        .then((resp) => {
           loadGeoJSONToMap(resp.data);
           loadGeoJSONToTop5(resp.data);
-        }
-      );
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     }
   }, [loaded, bounds, startDate, endDate]);
 
@@ -74,34 +75,40 @@ const HotMarket = () => {
       type: "heatmap",
       source: "hotmarkets",
       paint: {
-        'heatmap-weight': {
-          property: 'hot_score',
-          type: 'identity',
-
+        "heatmap-weight": {
+          property: "hot_score",
+          type: "identity",
         },
-      }
+      },
     });
   };
 
   const loadGeoJSONToTop5 = (data) => {
     const features = data.features.slice(0, 5);
-    const cities = features.map(i=>i.properties.major_metro)
+    const cities = features.map((i) => i.properties.major_metro);
     setTop5(cities);
-  }
+  };
 
   const startDateDidChange = (e) => {
-    setStartDate(e.target.value)
-  }
+    setStartDate(e.target.value);
+  };
 
   const endDateDidChange = (e) => {
-    setEndDate(e.target.value)
-  }
+    setEndDate(e.target.value);
+  };
 
   return (
     <Container fluid>
       <Row className="my-2">
-        <Col md={2}><RealEstateDatePicker label="Start Date" onChange={startDateDidChange} /></Col>
-        <Col md={2}><RealEstateDatePicker label="End Date"onChange={endDateDidChange} /></Col>
+        <Col md={2}>
+          <RealEstateDatePicker
+            label="Start Date"
+            onChange={startDateDidChange}
+          />
+        </Col>
+        <Col md={2}>
+          <RealEstateDatePicker label="End Date" onChange={endDateDidChange} />
+        </Col>
       </Row>
       <Row>
         <Col xs={12} md={8}>
@@ -110,11 +117,9 @@ const HotMarket = () => {
         <Col xs={6} md={4}>
           <h5>Top 5 Markets</h5>
           <ListGroup>
-          {top5.map((city, idx)=>{
-            return (
-              <ListGroup.Item key={idx}>{city}</ListGroup.Item>
-            )
-          })}
+            {top5.map((city, idx) => {
+              return <ListGroup.Item key={idx}>{city}</ListGroup.Item>;
+            })}
           </ListGroup>
         </Col>
       </Row>

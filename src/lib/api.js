@@ -5,3 +5,9 @@ export const getHotMarketData = async (startDate, endDate, nelat, nelng, swlat, 
     const json = await res.json();
     return json;
 }
+
+export const getInventoryAgeData = async (startDate, endDate, cities) => {
+    const res = await fetch(`${API_ENDPOINT}/inventory-age?start=${startDate}&end=${endDate}&cities=${cities}`);
+    const json = await res.json();
+    return json;
+}

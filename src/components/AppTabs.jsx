@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import {
-  Link
-} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const Header = () => {
-  const [key, setKey] = useState("hot-market");
+  const location = useLocation();
+  const [key, setKey] = useState(location.pathname.slice(1));
 
   const handleSelect = (key) => {
     setKey(key);
@@ -24,27 +23,37 @@ const Header = () => {
           >
             <Nav.Item>
               <Link to="/hot-market">
-                <Nav.Link as="div" eventKey="hot-market">Hot Market</Nav.Link>
+                <Nav.Link as="div" eventKey="hot-market">
+                  Hot Market
+                </Nav.Link>
               </Link>
             </Nav.Item>
             <Nav.Item>
               <Link to="/inventory-age">
-                <Nav.Link as="div" eventKey="inventory-age">Inventory Age</Nav.Link>
+                <Nav.Link as="div" eventKey="inventory-age">
+                  Inventory Age
+                </Nav.Link>
               </Link>
             </Nav.Item>
             <Nav.Item>
               <Link to="/avg-wealth">
-                <Nav.Link as="div" eventKey="avg-wealth">Average Wealth</Nav.Link>
+                <Nav.Link as="div" eventKey="avg-wealth">
+                  Average Wealth
+                </Nav.Link>
               </Link>
             </Nav.Item>
             <Nav.Item>
               <Link to="/unemployment">
-                <Nav.Link as="div" eventKey="unemployment">Unemployment</Nav.Link>
+                <Nav.Link as="div" eventKey="unemployment">
+                  Unemployment
+                </Nav.Link>
               </Link>
             </Nav.Item>
             <Nav.Item>
               <Link to="/cost-of-living">
-                <Nav.Link as="div" eventKey="cost-of-living">Cost of Living</Nav.Link>
+                <Nav.Link as="div" eventKey="cost-of-living">
+                  Cost of Living
+                </Nav.Link>
               </Link>
             </Nav.Item>
           </Nav>

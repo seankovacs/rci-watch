@@ -25,5 +25,12 @@ function md5Hash(string, sekret) {
   return md5Hasher.update(string).digest("hex");
 }
 
+function citiesToSQLIN(cities) {
+  if(!cities) return null;
+  const cityArray = cities.split('|');
+  return cityArray.map(i=>`'${i}'`).join(',')
+}
+
 exports.hashRows = hashRows;
 exports.md5Hash = md5Hash;
+exports.citiesToSQLIN = citiesToSQLIN;
