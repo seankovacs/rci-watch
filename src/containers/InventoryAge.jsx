@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import ListGroup from "react-bootstrap/ListGroup";
 import { getInventoryAgeData } from "../lib/api";
 import RealEstateDatePicker from "../components/RealEstateDatePicker";
 import RealEstateCitiesPicker from "../components/RealEstateCitiesPicker";
