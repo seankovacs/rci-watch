@@ -4,8 +4,35 @@ import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import { useAuth } from "../context/auth";
 import {
-    Link
+    Link,
+    useLocation
 } from "react-router-dom";
+
+const AppLoginButton = ({ user }) => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
+  if (user && isHomePage) {
+    return (
+      <Link to="/app">
+        <Button>Enter App</Button>
+      </Link>
+    );
+  } else if (user) {
+    return (
+      <Navbar.Text>
+        Signed in as: <Link to="/app">{user.email}</Link>
+      </Navbar.Text>
+    );
+  }
+
+  return (
+    <Link to="/login">
+      <Button>Login</Button>
+    </Link>
+  );
+};
+
 
 const NavBar = () => {
     const auth = useAuth();
@@ -18,13 +45,7 @@ const NavBar = () => {
                     <Link to="/"><Navbar.Brand>RCI Watch</Navbar.Brand></Link>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Nav>
-                        {!user ? <>
-                            <Link to="/login"><Button>Login</Button></Link>
-                        </> :
-                            <Navbar.Text>
-                                Signed in as: <Link to="/app">{user.email}</Link>
-                            </Navbar.Text>
-                        }
+                        <AppLoginButton user={user} />
                     </Nav>
                 </Container>
             </Navbar>
