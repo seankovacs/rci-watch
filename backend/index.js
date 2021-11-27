@@ -1,9 +1,14 @@
 const express = require("express");
 var bodyParser = require("body-parser");
-var GeoJSON = require('geojson');
+var GeoJSON = require("geojson");
 const { hashRows, md5Hash, citiesToSQLIN } = require("./lib/utils");
 const { getDBConnection, cleanUpDBConnection } = require("./lib/db");
-const { hotMarketQuery, inventoryAgeQuery } = require("./queries");
+const {
+  hotMarketQuery,
+  inventoryAgeQuery,
+  medianSalesPriceQuery,
+  medianSalesVsWageDataQuery,
+} = require("./queries");
 
 const ORACLE_USER = "seankovacs";
 const ORACLE_PW = "3zhBpnVi7YbLMigS5NZ0WQO5";
@@ -69,24 +74,23 @@ app.get("/hot-market", async function (req, res) {
   }
 
   try {
-    const retval = await db.execute(hotMarketQuery , {
-          startDate: startDateClean,
-          endDate: endDateClean,
-          nelng: parseFloat(nelngClean),
-          nelat: parseFloat(nelatClean),
-          swlng: parseFloat(swlngClean),
-          swlat: parseFloat(swlatClean),
-        }
-    );
+    const retval = await db.execute(hotMarketQuery, {
+      startDate: startDateClean,
+      endDate: endDateClean,
+      nelng: parseFloat(nelngClean),
+      nelat: parseFloat(nelatClean),
+      swlng: parseFloat(swlngClean),
+      swlat: parseFloat(swlatClean),
+    });
     const result = hashRows(retval);
-    var geoJSON = GeoJSON.parse(result, {Point: ['latitude', 'longitude']})
+    var geoJSON = GeoJSON.parse(result, { Point: ["latitude", "longitude"] });
   } catch (e) {
     var error = e;
   } finally {
     await cleanUpDBConnection(db);
     if (error) return standardError(res, error.message);
     // console.dir(geoJSON);
-    return res.json({ ok: true, data: geoJSON});
+    return res.json({ ok: true, data: geoJSON });
   }
 });
 
@@ -95,7 +99,9 @@ app.get("/inventory-age", async function (req, res) {
   const { start, end, cities } = req.query;
   const startDateClean = start ?? "2021-05-01";
   const endDateClean = end ?? "2021-07-01";
-  const citiesClean = citiesToSQLIN(cities) ?? '(SELECT DISTINCT MAJOR_METRO FROM ZIPCODE_LOOKUP)'
+  const citiesClean =
+    citiesToSQLIN(cities) ??
+    "(SELECT DISTINCT MAJOR_METRO FROM ZIPCODE_LOOKUP)";
 
   const db = await getDBConnection(ORACLE_USER, ORACLE_PW, ORACLE_CS);
   if (!db) {
@@ -104,18 +110,51 @@ app.get("/inventory-age", async function (req, res) {
 
   try {
     // oracledb makes it extra difficult to pass in elements to an IN statement, hence the function. dangerous for production due to sql injection
-    const retval = await db.execute(inventoryAgeQuery(citiesClean) , {
-          startDate: startDateClean,
-          endDate: endDateClean,
-        }
-    );
+    const retval = await db.execute(inventoryAgeQuery(citiesClean), {
+      startDate: startDateClean,
+      endDate: endDateClean,
+    });
     var result = hashRows(retval);
   } catch (e) {
     var error = e;
   } finally {
     await cleanUpDBConnection(db);
     if (error) return standardError(res, error.message);
-    return res.json({ ok: true, data: result});
+    return res.json({ ok: true, data: result });
+  }
+});
+
+// wage + realestate
+app.get("/average-wealth", async function (req, res) {
+  const { start, end, cities } = req.query;
+  const startYear = start ?? "2012";
+  const endYear = end ?? "2018";
+  const citiesClean =
+    citiesToSQLIN(cities) ??
+    "(SELECT DISTINCT MAJOR_METRO FROM ZIPCODE_LOOKUP)";
+  const startYearDate = `${startYear}-01-01`
+  const endYearDate = `${endYear}-01-01`
+
+  const db = await getDBConnection(ORACLE_USER, ORACLE_PW, ORACLE_CS);
+  if (!db) {
+    return standardError(res, "Couldn't establish a DB connection.");
+  }
+
+  try {
+    // oracledb makes it extra difficult to pass in elements to an IN statement, hence the function. dangerous for production due to sql injection
+    const retval = await db.execute(medianSalesVsWageDataQuery(citiesClean), {
+      startDate: startYearDate,
+      endDate: endYearDate,
+      startYear: startYear,
+      endYear: endYear,
+    });
+    var result = hashRows(retval);
+  } catch (e) {
+    var error = e;
+  } finally {
+    await cleanUpDBConnection(db);
+    if (error) return standardError(res, error.message);
+    return res.json({ ok: true, data: result });
   }
 });
 

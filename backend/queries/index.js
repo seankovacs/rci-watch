@@ -44,5 +44,49 @@ const inventoryAgeQuery = (cities) => `SELECT RE.START_PERIOD, Z.MAJOR_METRO, Z.
     GROUP BY RE.START_PERIOD, Z.MAJOR_METRO, Z.STATE
     ORDER BY Z.MAJOR_METRO, Z.STATE, RE.START_PERIOD`;
 
+const medianSalesPriceQuery = (cities) => `SELECT RE.START_PERIOD, Z.MAJOR_METRO, Z.STATE, SUM(RE.MEDIAN_SALE_PRICE * RE.HOMES_SOLD) / SUM(RE.HOMES_SOLD) AS MEDIAN_SALE_PRICE
+FROM REALESTATE RE
+INNER JOIN ZIPCODE_LOOKUP Z
+    ON RE.ZIP_CODE = Z.ZIP_CODE
+WHERE
+    RE.START_PERIOD BETWEEN TO_DATE(:startDate,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(:endDate,'YYYY-MM-DD HH24:MI:SS')
+    AND Z.MAJOR_METRO IN(${cities})
+GROUP BY RE.START_PERIOD, Z.MAJOR_METRO, Z.STATE
+ORDER BY Z.MAJOR_METRO, Z.STATE, RE.START_PERIOD`;
+
+const wageDataQuery = (cities) => `SELECT W.YEAR, Z.MAJOR_METRO, Z.STATE, SUM(W.AGI * W.NUMBER_OF_RETURNS) / SUM(W.NUMBER_OF_RETURNS) AS WAGE
+FROM WAGE W
+INNER JOIN ZIPCODE_LOOKUP Z
+    ON W.ZIP_CODE = Z.ZIP_CODE
+WHERE Z.MAJOR_METRO IN(${cities})
+    AND W.YEAR BETWEEN :startYear AND :endYear
+GROUP BY W.YEAR, Z.MAJOR_METRO, Z.STATE
+ORDER BY Z.MAJOR_METRO, Z.STATE, W.YEAR`;
+
+const medianSalesVsWageDataQuery = (cities) => `WITH housingData as (
+    SELECT Z.MAJOR_METRO, Z.STATE, EXTRACT(year from RE.START_PERIOD) AS YEAR, SUM(RE.MEDIAN_SALE_PRICE * RE.HOMES_SOLD) / SUM(RE.HOMES_SOLD) AS MEDIAN_SALE_PRICE
+    FROM REALESTATE RE
+    INNER JOIN ZIPCODE_LOOKUP Z
+        ON RE.ZIP_CODE = Z.ZIP_CODE
+    WHERE
+        RE.START_PERIOD BETWEEN TO_DATE(:startDate,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(:endDate,'YYYY-MM-DD HH24:MI:SS')
+        AND Z.MAJOR_METRO IN(${cities})
+    GROUP BY Z.MAJOR_METRO, Z.STATE, EXTRACT(year from RE.START_PERIOD)
+    ), wageData as (
+    SELECT W.YEAR, Z.MAJOR_METRO, Z.STATE, SUM(W.AGI * W.NUMBER_OF_RETURNS) / SUM(W.NUMBER_OF_RETURNS) AS WAGE
+    FROM WAGE W
+    INNER JOIN ZIPCODE_LOOKUP Z
+        ON W.ZIP_CODE = Z.ZIP_CODE
+    WHERE Z.MAJOR_METRO IN(${cities})
+    AND W.YEAR BETWEEN :startYear AND :endYear
+    GROUP BY W.YEAR, Z.MAJOR_METRO, Z.STATE) 
+    SELECT h.year, h.major_metro, h.state, h.median_sale_price, w.wage, h.median_sale_price / w.wage as hometoincomeratio
+    FROM housingData h
+    inner join wageData w on h.year = w.year and h.major_metro = w.major_metro
+    ORDER BY h.MAJOR_METRO, h.STATE, h.year`;
+
 exports.hotMarketQuery = hotMarketQuery;
 exports.inventoryAgeQuery = inventoryAgeQuery;
+exports.medianSalesPriceQuery = medianSalesPriceQuery;
+exports.wageDataQuery = wageDataQuery;
+exports.medianSalesVsWageDataQuery = medianSalesVsWageDataQuery;

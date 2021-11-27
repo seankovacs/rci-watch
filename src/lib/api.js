@@ -11,3 +11,9 @@ export const getInventoryAgeData = async (startDate, endDate, cities) => {
     const json = await res.json();
     return json;
 }
+
+export const getAverageWealthData = async (startDate, endDate, cities) => {
+    const res = await fetch(`${API_ENDPOINT}/average-wealth?start=${startDate}&end=${endDate}&cities=${cities}`);
+    const json = await res.json();
+    return json;
+}

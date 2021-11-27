@@ -18,5 +18,12 @@ const getDates = (start, end) => {
   return range.sort((a,b)=> b - a)
 }
 
+const getYears = (min, max) => {
+  return Array.from({
+    length: max - min + 1
+ }, (_, i) => min + i)
+}
+
 exports.groupBy = groupBy;
 exports.getDates = getDates;
+exports.getYears = getYears

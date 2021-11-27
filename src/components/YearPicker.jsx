@@ -1,10 +1,10 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
-import { getDates } from '../lib/utils';
+import { getYears } from '../lib/utils';
 
-const RealEstateDatePicker = ({ label, startDate = "2012-01-01", endDate = "2021-07-01", ...rest }) => {
-  const dates = getDates(startDate, endDate);
+const YearPicker = ({ label, startYear = 2012, endYear = 2018, ...rest }) => {
+  const years = getYears(startYear, endYear);
 
   return (
     <Form.Group as={Col} className="">
@@ -15,8 +15,8 @@ const RealEstateDatePicker = ({ label, startDate = "2012-01-01", endDate = "2021
         <Form.Select size="md" {...rest}>
           <option></option>
           {
-            dates.map(d=>{
-              return <option key={d.format('YYYY-MM-DD')} value={d.format('YYYY-MM-DD')}>{d.format('YYYY - MMMM')}</option>
+            years.map(d=>{
+              return <option key={d} value={d}>{d}</option>
             })
           }
         </Form.Select>
@@ -25,4 +25,4 @@ const RealEstateDatePicker = ({ label, startDate = "2012-01-01", endDate = "2021
   );
 };
 
-export default RealEstateDatePicker;
+export default YearPicker;

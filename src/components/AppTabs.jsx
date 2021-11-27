@@ -36,8 +36,8 @@ const Header = () => {
               </Link>
             </Nav.Item>
             <Nav.Item>
-              <Link to="/avg-wealth">
-                <Nav.Link as="div" eventKey="avg-wealth">
+              <Link to="/average-wealth">
+                <Nav.Link as="div" eventKey="average-wealth">
                   Average Wealth
                 </Nav.Link>
               </Link>
