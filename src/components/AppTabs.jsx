@@ -49,13 +49,6 @@ const Header = () => {
                 </Nav.Link>
               </Link>
             </Nav.Item>
-            <Nav.Item>
-              <Link to="/cost-of-living">
-                <Nav.Link as="div" eventKey="cost-of-living">
-                  Cost of Living
-                </Nav.Link>
-              </Link>
-            </Nav.Item>
           </Nav>
         </Container>
       </Navbar>
