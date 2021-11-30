@@ -17,7 +17,7 @@ const AverageWealth = () => {
   // get data
   useEffect(() => {
     if (startDate && endDate && cities.length > 0) {
-        getAverageWealthData(startDate, endDate, cities.join("|"))
+      getAverageWealthData(startDate, endDate, cities.join("|"))
         .then((resp) => {
           console.log(resp);
           const grouped = groupBy(resp.data, (i) => i.major_metro);
@@ -40,7 +40,7 @@ const AverageWealth = () => {
   }, [startDate, endDate, cities]);
 
   const startDateDidChange = (e) => {
-      setEndDate('')
+    setEndDate("");
     setStartDate(e.target.value);
   };
 
@@ -54,6 +54,9 @@ const AverageWealth = () => {
 
   const options = React.useMemo(
     () => ({
+      title: {
+        text: "Median Home Sales Price to Income Ratio",
+      },
       chart: {
         type: "line",
         toolbar: {
@@ -69,22 +72,40 @@ const AverageWealth = () => {
       legend: {
         showForSingleSeries: true,
         show: true,
-        position: 'right'
+        position: "right",
+      },
+      grid: {
+        padding: {
+          left: 50,
+        },
       },
       dataLabels: {
         enabled: true,
+        formatter: (value) => `${value.toFixed(2)}%`,
       },
       stroke: {
         curve: "smooth",
       },
       xaxis: {
         type: "categories",
-        tickAmount: 'dataPoints',
-        categories: []
+        tickAmount: "dataPoints",
+        categories: [],
       },
+      yaxis: [
+        {
+          type: "line",
+          labels: {
+            rotate: -45,
+            formatter: (value) => `${value.toFixed(1)}%`,
+          },
+        },
+      ],
       tooltip: {
         x: {
           format: "yyyy",
+        },
+        y: {
+          formatter: (value) => `${value.toFixed(2)}%`,
         },
       },
     }),
@@ -95,10 +116,18 @@ const AverageWealth = () => {
     <Container fluid>
       <Row className="my-2">
         <Col md={2}>
-          <YearPicker label="Start Year" value={startDate} onChange={startDateDidChange} />
+          <YearPicker
+            label="Start Year"
+            value={startDate}
+            onChange={startDateDidChange}
+          />
         </Col>
         <Col md={2}>
-          <YearPicker label="End Year" value={endDate} onChange={endDateDidChange} />
+          <YearPicker
+            label="End Year"
+            value={endDate}
+            onChange={endDateDidChange}
+          />
         </Col>
         <Col md={4}>
           <RealEstateCitiesPicker label="Cities" onChange={citiesDidChange} />

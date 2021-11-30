@@ -51,6 +51,9 @@ const InventoryAge = () => {
 
   const options = React.useMemo(
     () => ({
+      title: {
+        text: "Median Days on Market",
+      },
       chart: {
         type: "line",
         toolbar: {
@@ -61,6 +64,11 @@ const InventoryAge = () => {
         },
         dynamticAnimation: {
           enabled: false,
+        },
+      },
+      grid: {
+        padding: {
+          left: 50,
         },
       },
       legend: {
@@ -80,7 +88,10 @@ const InventoryAge = () => {
         categories: []
       },
       yaxis: {
-          type: "number"
+          type: "number",
+          labels: {
+            rotate: -45,
+          },
       },
       tooltip: {
         x: {

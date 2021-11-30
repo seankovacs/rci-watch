@@ -182,7 +182,6 @@ const Unemployment = () => {
         {
           type: "line",
           labels: {
-            minWidth: 40,
             rotate: -45,
             formatter: (value) => `${value.toFixed(1)}%`,
           },
