@@ -15,9 +15,9 @@ const HotMarket = () => {
   const map = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [bounds, setBounds] = useState(null);
-  const [lng] = useState(-96.1);
-  const [lat] = useState(38.0);
-  const [zoom] = useState(3.5);
+  const [lng] = useState(-83.11);
+  const [lat] = useState(28.15);
+  const [zoom] = useState(5.7);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [top5, setTop5] = useState([]);
