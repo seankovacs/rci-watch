@@ -41,8 +41,8 @@ const NavBar = () => {
     return (
         <>
             <Navbar bg="dark" variant="dark">
-                <Container>
-                    <Link to="/"><Navbar.Brand>RCI Watch</Navbar.Brand></Link>
+                <Container fluid>
+                    <Link to="/"><Navbar.Brand><img src="logo-sm.png" width={75} />{' '}RCI Watch</Navbar.Brand></Link>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Nav>
                         <AppLoginButton user={user} />

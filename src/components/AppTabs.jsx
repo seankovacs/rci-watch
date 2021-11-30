@@ -7,6 +7,10 @@ const Header = () => {
   const location = useLocation();
   const [key, setKey] = useState(location.pathname.slice(1));
 
+  React.useEffect(()=>{
+    setKey(location.pathname.slice(1))
+  }, [location]);
+
   const handleSelect = (key) => {
     setKey(key);
   };
