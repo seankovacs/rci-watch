@@ -90,6 +90,7 @@ const HotMarket = () => {
   };
 
   const startDateDidChange = (e) => {
+    setEndDate('');
     setStartDate(e.target.value);
   };
 
@@ -103,11 +104,12 @@ const HotMarket = () => {
         <Col md={2}>
           <RealEstateDatePicker
             label="Start Date"
+            value={startDate}
             onChange={startDateDidChange}
           />
         </Col>
         <Col md={2}>
-          <RealEstateDatePicker label="End Date" onChange={endDateDidChange} />
+          <RealEstateDatePicker label="End Date" value={endDate} onChange={endDateDidChange} />
         </Col>
       </Row>
       <Row>

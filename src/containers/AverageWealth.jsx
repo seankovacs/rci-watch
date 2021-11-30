@@ -40,6 +40,7 @@ const AverageWealth = () => {
   }, [startDate, endDate, cities]);
 
   const startDateDidChange = (e) => {
+      setEndDate('')
     setStartDate(e.target.value);
   };
 
@@ -94,10 +95,10 @@ const AverageWealth = () => {
     <Container fluid>
       <Row className="my-2">
         <Col md={2}>
-          <YearPicker label="Start Year" onChange={startDateDidChange} />
+          <YearPicker label="Start Year" value={startDate} onChange={startDateDidChange} />
         </Col>
         <Col md={2}>
-          <YearPicker label="End Year" onChange={endDateDidChange} />
+          <YearPicker label="End Year" value={endDate} onChange={endDateDidChange} />
         </Col>
         <Col md={4}>
           <RealEstateCitiesPicker label="Cities" onChange={citiesDidChange} />

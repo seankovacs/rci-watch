@@ -37,6 +37,7 @@ const InventoryAge = () => {
   }, [startDate, endDate, cities]);
 
   const startDateDidChange = (e) => {
+    setEndDate('')
     setStartDate(e.target.value);
   };
 
@@ -96,11 +97,12 @@ const InventoryAge = () => {
         <Col md={2}>
           <RealEstateDatePicker
             label="Start Date"
+            value={startDate}
             onChange={startDateDidChange}
           />
         </Col>
         <Col md={2}>
-          <RealEstateDatePicker label="End Date" onChange={endDateDidChange} />
+          <RealEstateDatePicker label="End Date" value={endDate} onChange={endDateDidChange} />
         </Col>
         <Col md={4}>
           <RealEstateCitiesPicker label="Cities" onChange={citiesDidChange} />
