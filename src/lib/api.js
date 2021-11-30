@@ -17,3 +17,9 @@ export const getAverageWealthData = async (startDate, endDate, cities) => {
     const json = await res.json();
     return json;
 }
+
+export const getUnemploymentData = async (startDate, endDate, cities) => {
+    const res = await fetch(`${API_ENDPOINT}/unemployment?start=${startDate}&end=${endDate}&cities=${cities}`);
+    const json = await res.json();
+    return json;
+}

@@ -85,8 +85,35 @@ const medianSalesVsWageDataQuery = (cities) => `WITH housingData as (
     inner join wageData w on h.year = w.year and h.major_metro = w.major_metro
     ORDER BY h.MAJOR_METRO, h.STATE, h.year`;
 
+const medianSalesVsUnemploymentDataQuery = (cities) => `WITH housingData as (
+    SELECT Z.MAJOR_METRO, Z.STATE, EXTRACT(year from RE.START_PERIOD) AS YEAR, SUM(RE.MEDIAN_SALE_PRICE * RE.HOMES_SOLD) / SUM(RE.HOMES_SOLD) AS MEDIAN_SALE_PRICE
+    FROM REALESTATE RE
+    INNER JOIN ZIPCODE_LOOKUP Z
+        ON RE.ZIP_CODE = Z.ZIP_CODE
+    WHERE
+        RE.START_PERIOD BETWEEN TO_DATE(:startDate,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(:endDate,'YYYY-MM-DD HH24:MI:SS')
+        AND Z.MAJOR_METRO IN(${cities})
+    GROUP BY Z.MAJOR_METRO, Z.STATE, EXTRACT(year from RE.START_PERIOD)
+    ), unemploymentData as (
+    SELECT U.YEAR, Z.MAJOR_METRO, Z.STATE, SUM(U.UNEMPLOYED) / SUM(U.LABOR_FORCE) AS UNEMPLOYMENT_RATE
+    FROM UNEMPLOYMENT U
+    INNER JOIN (
+            SELECT DISTINCT STATE, COUNTY, MAJOR_METRO
+            FROM ZIPCODE_LOOKUP
+        ) Z
+        ON U.COUNTY = Z.COUNTY
+        AND U.STATE = Z.STATE
+    WHERE Z.MAJOR_METRO IN(${cities})
+    AND U.YEAR BETWEEN :startYear AND :endYear
+    GROUP BY U.YEAR, Z.MAJOR_METRO, Z.STATE) 
+    SELECT h.year, h.major_metro, h.state, h.median_sale_price, u.unemployment_rate, h.median_sale_price * u.unemployment_rate as hometounemployment
+    FROM housingData h
+    inner join unemploymentData u on h.year = u.year and h.major_metro = u.major_metro
+    ORDER BY h.MAJOR_METRO, h.STATE, h.year`;
+
 exports.hotMarketQuery = hotMarketQuery;
 exports.inventoryAgeQuery = inventoryAgeQuery;
 exports.medianSalesPriceQuery = medianSalesPriceQuery;
 exports.wageDataQuery = wageDataQuery;
 exports.medianSalesVsWageDataQuery = medianSalesVsWageDataQuery;
+exports.medianSalesVsUnemploymentDataQuery = medianSalesVsUnemploymentDataQuery;

@@ -8,6 +8,7 @@ import LoginPage from "./containers/LoginPage";
 import HotMarket from "./containers/HotMarket";
 import InventoryAge from "./containers/InventoryAge";
 import AverageWealth from "./containers/AverageWealth";
+import Unemployment from "./containers/Unemployment";
 
 function RequireAuth({ children }) {
   let auth = useAuth();
@@ -57,7 +58,7 @@ export default function AppRoutes() {
           path="/unemployment"
           element={
             <RequireAuth>
-              <div>Hello</div>
+              <Unemployment />
             </RequireAuth>
           }
         />

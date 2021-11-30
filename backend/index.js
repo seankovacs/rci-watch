@@ -6,8 +6,8 @@ const { getDBConnection, cleanUpDBConnection } = require("./lib/db");
 const {
   hotMarketQuery,
   inventoryAgeQuery,
-  medianSalesPriceQuery,
   medianSalesVsWageDataQuery,
+  medianSalesVsUnemploymentDataQuery
 } = require("./queries");
 
 const ORACLE_USER = "seankovacs";
@@ -143,6 +143,40 @@ app.get("/average-wealth", async function (req, res) {
   try {
     // oracledb makes it extra difficult to pass in elements to an IN statement, hence the function. dangerous for production due to sql injection
     const retval = await db.execute(medianSalesVsWageDataQuery(citiesClean), {
+      startDate: startYearDate,
+      endDate: endYearDate,
+      startYear: startYear,
+      endYear: endYear,
+    });
+    var result = hashRows(retval);
+  } catch (e) {
+    var error = e;
+  } finally {
+    await cleanUpDBConnection(db);
+    if (error) return standardError(res, error.message);
+    return res.json({ ok: true, data: result });
+  }
+});
+
+// unemployment
+app.get("/unemployment", async function (req, res) {
+  const { start, end, cities } = req.query;
+  const startYear = start ?? "2012";
+  const endYear = end ?? "2018";
+  const citiesClean =
+    citiesToSQLIN(cities) ??
+    "(SELECT DISTINCT MAJOR_METRO FROM ZIPCODE_LOOKUP)";
+  const startYearDate = `${startYear}-01-01`
+  const endYearDate = `${endYear}-01-01`
+
+  const db = await getDBConnection(ORACLE_USER, ORACLE_PW, ORACLE_CS);
+  if (!db) {
+    return standardError(res, "Couldn't establish a DB connection.");
+  }
+
+  try {
+    // oracledb makes it extra difficult to pass in elements to an IN statement, hence the function. dangerous for production due to sql injection
+    const retval = await db.execute(medianSalesVsUnemploymentDataQuery(citiesClean), {
       startDate: startYearDate,
       endDate: endYearDate,
       startYear: startYear,
